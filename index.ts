@@ -1,8 +1,15 @@
 import Server from "./classes/server";
 import userRoutes from "./routes/usuarios";
 import mongoose from "mongoose";
+import bodyParser from "body-parser";
 
 const server = new Server();
+
+
+// Body parser
+server.app.use( bodyParser.urlencoded({ extended: true }) );
+server.app.use( bodyParser.json() );
+
 
 
 // Rutas de la app
@@ -20,7 +27,7 @@ mongoose.connect("mongodb://localhost:27017/fotosgram", {
 
 
 // Levantar express
+console.log(`Servidor corriendo en puerto ${ server.port }`);
 server.start( ()=> {
-    console.log(`Servidor corriendo en puerto ${ server.port }`);
     
 } )
