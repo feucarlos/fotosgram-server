@@ -6,23 +6,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const usuario_model_1 = require("../models/usuario.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const token_1 = __importDefault(require("../classes/token"));
 const userRoutes = express_1.Router();
 // Login
 userRoutes.post("/login", (req, res) => {
     const body = req.body;
-    usuario_model_1.Usuario.findOne({ email: body.email }, (err, userDb) => {
+    usuario_model_1.Usuario.findOne({ email: body.email }, (err, userDB) => {
         if (err)
             throw err;
-        if (!userDb) {
+        if (!userDB) {
             return res.json({
                 ok: false,
                 mensaje: "Usuario o contraseña incorrectos"
             });
         }
-        if (userDb.compararPassword(body.password)) {
+        if (userDB.compararPassword(body.password)) {
+            const userToken = token_1.default.getJwtToken({
+                _id: userDB._id,
+                nombre: userDB.nombre,
+                email: userDB.email,
+                avatar: userDB.avatar
+            });
             res.json({
                 ok: true,
-                token: "JKAHSDFLIU8WNCUIAALSKJDDU8"
+                token: userToken
             });
         }
         else {
@@ -42,15 +49,27 @@ userRoutes.post("/create", (req, res) => {
         avatar: req.body.avatar
     };
     usuario_model_1.Usuario.create(user).then(userDB => {
+        const userToken = token_1.default.getJwtToken({
+            _id: userDB._id,
+            nombre: userDB.nombre,
+            email: userDB.email,
+            avatar: userDB.avatar
+        });
         res.json({
             ok: true,
-            user
+            token: userToken
         });
     }).catch(err => {
         res.json({
             ok: false,
             err
         });
+    });
+});
+// Actualizar usuario
+userRoutes.post('/update', (req, res) => {
+    res.json({
+        ok: true
     });
 });
 exports.default = userRoutes;

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { Usuario } from "../models/usuario.model";
 import bcrypt from "bcrypt";
+import Token from "../classes/token";
 
 const userRoutes = Router();
 
@@ -8,21 +9,30 @@ const userRoutes = Router();
 userRoutes.post("/login", (req: Request, res: Response)=> {
     const body = req.body;
 
-    Usuario.findOne({ email: body.email }, (err, userDb) => {
+    Usuario.findOne({ email: body.email }, (err, userDB) => {
         if ( err ) throw err;
 
-        if (!userDb) {
+        if (!userDB) {
             return res.json({
                 ok: false,
                 mensaje: "Usuario o contraseña incorrectos"
             });
         }
 
-        if ( userDb.compararPassword(body.password) ){
+        if ( userDB.compararPassword(body.password) ){
+            
+            const userToken = Token.getJwtToken({
+                _id: userDB._id,
+                nombre: userDB.nombre,
+                email: userDB.email,
+                avatar: userDB.avatar
+            });
+            
             res.json({
                 ok: true,
-                token: "JKAHSDFLIU8WNCUIAALSKJDDU8"
+                token: userToken
             });
+
         } else {
             return res.json({
                 ok: false,
@@ -43,10 +53,19 @@ userRoutes.post("/create", (req: Request, res: Response)=> {
     }
 
     Usuario.create(user).then( userDB => {
+
+        const userToken = Token.getJwtToken({
+            _id: userDB._id,
+            nombre: userDB.nombre,
+            email: userDB.email,
+            avatar: userDB.avatar
+        });
+
         res.json({
             ok: true,
-            user
+            token: userToken
         });
+
     }).catch(err => {
         res.json({
             ok: false,
@@ -56,6 +75,15 @@ userRoutes.post("/create", (req: Request, res: Response)=> {
     });
 
 });
+
+// Actualizar usuario
+userRoutes.post('/update', (req: Request, res: Response) => {
+    res.json({
+        ok: true
+    });
+
+});
+
 
 
 export default userRoutes;
