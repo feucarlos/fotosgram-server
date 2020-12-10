@@ -26,6 +26,7 @@ mongoose.connect("mongodb://localhost:27017/fotosgram", {
 
 
 
+
 // Levantar express
 console.log(`Servidor corriendo en puerto ${ server.port }`);
 server.start( ()=> {
