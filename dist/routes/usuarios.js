@@ -7,6 +7,7 @@ const express_1 = require("express");
 const usuario_model_1 = require("../models/usuario.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const token_1 = __importDefault(require("../classes/token"));
+const autenticacion_1 = require("../middlewares/autenticacion");
 const userRoutes = express_1.Router();
 // Login
 userRoutes.post("/login", (req, res) => {
@@ -67,9 +68,10 @@ userRoutes.post("/create", (req, res) => {
     });
 });
 // Actualizar usuario
-userRoutes.post('/update', (req, res) => {
+userRoutes.post('/update', autenticacion_1.verificaToken, (req, res) => {
     res.json({
-        ok: true
+        ok: true,
+        usuario: req.usuario
     });
 });
 exports.default = userRoutes;
