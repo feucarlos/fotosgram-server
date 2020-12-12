@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import userRoutes from '../routes/usuarios';
 
 export default class Token {
     private static seed: string = 'seedpersonalizadogurc741127';
@@ -16,6 +15,7 @@ export default class Token {
     static comprobarToken( userToken: string ) {
 
         return new Promise( (resolve, reject) => {
+            
             jwt.verify( userToken, this.seed, (err, decoded ) => {
                 if (err) {
                     // Token no válido
