@@ -35,6 +35,9 @@ postRoutes.post('/', [verificaToken], (req: any, res: Response) => {
     const body = req.body;
     body.usuario = req.usuario._id;
 
+    const images = fileSystem.imagenesDeTempHaciaPost( req.usuario._id );
+    body.imgs = images;
+
     Post.create(body).then(async postDB => {
 
         await postDB.populate('usuario', '-password').execPopulate();

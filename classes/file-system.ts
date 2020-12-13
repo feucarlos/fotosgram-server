@@ -53,4 +53,31 @@ export default class FileSystem {
         return pathUserTemp;
 
     }
+
+    imagenesDeTempHaciaPost( userId: string){
+        
+        const pathTemp = path.resolve(__dirname, '../uploads', userId, 'temp');
+        const pathPost = path.resolve(__dirname, '../uploads', userId, 'posts');
+
+        if ( !fs.existsSync(pathTemp) ){
+            return [];
+        }
+
+        if ( !fs.existsSync(pathPost) ){
+            fs.mkdirSync( pathPost );
+        }
+
+        const imagenesTemp = this.obtenerImagenesEnTemp( userId );
+
+        imagenesTemp.forEach( imagen => {
+            fs.renameSync(`${ pathTemp }/${ imagen }`, `${ pathPost }/${ imagen }`)
+        });
+
+        return imagenesTemp;
+    }
+
+    private obtenerImagenesEnTemp( userId: string ){
+        const pathTemp = path.resolve(__dirname, '../uploads', userId, 'temp');
+        return fs.readdirSync( pathTemp ) || [];
+    }
 }
