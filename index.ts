@@ -3,6 +3,7 @@ import userRoutes from "./routes/usuarios";
 import postRoutes from "./routes/post";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import fileUpload from 'express-fileupload';
 
 const server = new Server();
 
@@ -11,7 +12,8 @@ const server = new Server();
 server.app.use( bodyParser.urlencoded({ extended: true }) );
 server.app.use( bodyParser.json() );
 
-
+// Fileupload
+server.app.use( fileUpload() );
 
 // Rutas de la app
 server.app.use("/user", userRoutes);

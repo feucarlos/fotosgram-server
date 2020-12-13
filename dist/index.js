@@ -8,10 +8,13 @@ const usuarios_1 = __importDefault(require("./routes/usuarios"));
 const post_1 = __importDefault(require("./routes/post"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const server = new server_1.default();
 // Body parser
 server.app.use(body_parser_1.default.urlencoded({ extended: true }));
 server.app.use(body_parser_1.default.json());
+// Fileupload
+server.app.use(express_fileupload_1.default());
 // Rutas de la app
 server.app.use("/user", usuarios_1.default);
 server.app.use("/posts", post_1.default);
